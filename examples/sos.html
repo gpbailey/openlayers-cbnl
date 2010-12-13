@@ -77,11 +77,13 @@
             showPopup: function(response) {
                 this.count++;
                 var output = this.obsformat.read(response.responseXML || response.responseText);
-                this.html += '<tr>';
-                this.html += '<td width="100">'+this.getTitleForObservedProperty(output.measurements[0].observedProperty)+'</td>';
-                this.html += '<td>'+output.measurements[0].samplingTime.timeInstant.timePosition+'</td>';
-                this.html += '<td>'+output.measurements[0].result.value + ' ' + output.measurements[0].result.uom + '</td>';
-                this.html += '</tr>';
+                if (output.measurements.length > 0) {
+                    this.html += '<tr>';
+                    this.html += '<td width="100">'+this.getTitleForObservedProperty(output.measurements[0].observedProperty)+'</td>';
+                    this.html += '<td>'+output.measurements[0].samplingTime.timeInstant.timePosition+'</td>';
+                    this.html += '<td>'+output.measurements[0].result.value + ' ' + output.measurements[0].result.uom + '</td>';
+                    this.html += '</tr>';
+                }
                 // check if we are done
                 if (this.count === this.numRequests) {
                     var html = '<table cellspacing="10"><tbody>';
@@ -131,12 +133,13 @@
                         responseMode: 'inline',
                         procedure: feature.attributes.id,
                         offering: name,
-                        observedProperty: offering.observedProperties[0],
+                        observedProperties: offering.observedProperties,
                         responseFormat: this.responseFormat
                     });
                     OpenLayers.Request.POST({
                         url: this.url,
                         scope: this,
+                        failure: this.showPopup,
                         success: this.showPopup,
                         data: xml
                     });
@@ -165,6 +168,7 @@
     <h1 id="title">SOS client example</h1>
 
     <div id="tags">
+        sos, sensor, observation, popup, advanced
     </div>
         <p id="shortdesc">
             Shows how to connect OpenLayers to a Sensor Observation Service (SOS)
