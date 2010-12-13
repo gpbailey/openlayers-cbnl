@@ -70,3 +70,4 @@ Please join the email lists at http://openlayers.org/mailman/listinfo
 Patches are welcome!
 
 = 30 =
+ 
